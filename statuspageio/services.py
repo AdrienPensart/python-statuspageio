@@ -101,7 +101,7 @@ class ComponentsService(object):
     Normally you won't instantiate this class directly.
     """
 
-    OPTS_KEYS_TO_PERSIST = ['name', 'description', 'group_id', 'status']
+    OPTS_KEYS_TO_PERSIST = ['name', 'description', 'group_id', 'status', 'showcase']
 
     def __init__(self, http_client, page_id):
         """
