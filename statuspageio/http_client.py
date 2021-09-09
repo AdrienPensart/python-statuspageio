@@ -1,19 +1,17 @@
-import requests
+import logging
+import http.client as http_client
 import json
-
+import requests
 from munch import munchify
-
 from statuspageio.errors import RateLimitError, RequestError, ResourceError, ServerError
 
 
-class HttpClient(object):
+class HttpClient:
     """
     Wrapper over :module:`requests` that understands StatusPage.io envelope, encoding and decoding schema.
     """
 
-    """
-    Supported REST API version prefix.
-    """
+    # Supported REST API version prefix.
     API_VERSION = '/v1'
 
     def __init__(self, config):
@@ -63,7 +61,7 @@ class HttpClient(object):
         """
 
         return self.request('put', url, body=body, **kwargs)
-    
+
     def patch(self, url, body=None, **kwargs):
         """
         Send a PATCH request.
@@ -76,7 +74,6 @@ class HttpClient(object):
         """
 
         return self.request('patch', url, body=body, **kwargs)
-
 
     def delete(self, url, params=None, **kwargs):
         """
@@ -122,14 +119,13 @@ class HttpClient(object):
                                                      version=self.API_VERSION,
                                                      resource=url)
 
-        
         headers = {
-            "Content-Type": "application/x-www-form-urlencoded", 
+            "Content-Type": "application/x-www-form-urlencoded",
             "Authorization": "OAuth " + self.config.api_key
-        }   
+        }
 
         user_headers = {}
-        if  'headers' in kwargs and isinstance(kwargs['headers'], dict):
+        if 'headers' in kwargs and isinstance(kwargs['headers'], dict):
             user_headers = kwargs['headers']
 
         headers.update(user_headers)
@@ -138,7 +134,7 @@ class HttpClient(object):
 
         if body is not None:
             headers['Content-Type'] = 'application/json'
-            payload = body if raw else self.wrap_envelope(kwargs['container'],body)
+            payload = body if raw else self.wrap_envelope(kwargs['container'], body)
             body = json.dumps(payload)
 
         resp = requests.request(method, url,
@@ -148,7 +144,7 @@ class HttpClient(object):
                                 timeout=float(self.config.timeout),
                                 verify=self.config.verify_ssl)
 
-        if not (200 <= resp.status_code < 300):
+        if not 200 <= resp.status_code < 300:
             self.handle_error_response(resp)
 
         if 'Content-Type' in resp.headers and 'json' in resp.headers['Content-Type']:
@@ -158,44 +154,39 @@ class HttpClient(object):
 
         return (resp.status_code, resp.headers, resp_body)
 
-    def handle_error_response(self, resp):
+    @staticmethod
+    def handle_error_response(resp):
         try:
             errors = resp.json()
-        except:
+        except Exception as e:
             raise Exception('Unknown HTTP error response. Json expected. '
                             'HTTP response code={0}. '
                             'HTTP response body={1}'.format(resp.status_code,
-                                                            resp.text))
+                                                            resp.text)) from e
+
         resp_code = resp.status_code
         if resp_code == 422:
             raise ResourceError(resp_code, errors)
-        elif resp_code == 420:
+        if resp_code == 420:
             raise RateLimitError()
-        elif 400 <= resp_code < 500:
+        if 400 <= resp_code < 500:
             raise RequestError(resp_code, errors)
-        elif 500 <= resp_code < 600:
+        if 500 <= resp_code < 600:
             raise ServerError(resp_code, errors)
-        else:
-            raise Exception('Unknown HTTP error response')
+        raise Exception('Unknown HTTP error response')
 
     @staticmethod
     def wrap_envelope(container, body):
         """ Wrap the body with the correct container to match the API """
-        return {container : body}
+        return {container: body}
 
     @staticmethod
     def unwrap_envelope(body):
         return [munchify(item) for item in body['items']] if 'items' in body else munchify(body)
-    
-    def enable_logging(self):
-        import logging
-        try:
-            import http.client as http_client
-        except ImportError:
-            # Python 2
-            import httplib as http_client
-        http_client.HTTPConnection.debuglevel = 1
 
+    @staticmethod
+    def enable_logging():
+        http_client.HTTPConnection.debuglevel = 1
         logging.basicConfig()
         logging.getLogger().setLevel(logging.DEBUG)
         requests_log = logging.getLogger("requests.packages.urllib3")

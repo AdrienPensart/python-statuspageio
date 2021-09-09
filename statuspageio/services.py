@@ -1,8 +1,7 @@
-
 from statuspageio.errors import ConfigurationError
 
 
-class PageService(object):
+class PageService:
     """
     :class:`statuspageio.PageService` is used by :class:`statuspageio.Client` to make
     actions related to Page resource.
@@ -55,7 +54,6 @@ class PageService(object):
         :rtype: dict
         """
 
-
         OPTS_KEYS_TO_PERSIST = [
             'name',
             'url',
@@ -84,7 +82,7 @@ class PageService(object):
         if not kwargs:
             raise Exception('attributes are missing')
 
-        attributes = dict((k, v) for k, v in kwargs.iteritems()
+        attributes = dict((k, v) for k, v in kwargs.items()
                           if k in OPTS_KEYS_TO_PERSIST)
 
         page = self.http_client.patch('/pages/{page_id}.json'.format(page_id=self.page_id),
@@ -93,7 +91,8 @@ class PageService(object):
 
         return page
 
-class ComponentsService(object):
+
+class ComponentsService:
     """
     :class:`statuspageio.ComponentsService` is used by :class:`statuspageio.Client` to make
     actions related to Components resource.
@@ -133,7 +132,6 @@ class ComponentsService(object):
             '/pages/{page_id}/components.json'.format(page_id=self.page_id))
         return components
 
-
     def create(self, **kwargs):
         """
         Create a component
@@ -148,11 +146,10 @@ class ComponentsService(object):
         :rtype: dict
         """
 
-
         if not kwargs:
             raise Exception('attributes are missing')
 
-        attributes = dict((k, v) for k, v in kwargs.iteritems()
+        attributes = dict((k, v) for k, v in kwargs.items()
                           if k in self.OPTS_KEYS_TO_PERSIST)
 
         _, _, component = self.http_client.post(
@@ -180,7 +177,6 @@ class ComponentsService(object):
                 page_id=self.page_id, component_id=component_id))
         return status_code
 
-
     def update(self, component_id, **kwargs):
         """
         Update a component
@@ -199,7 +195,7 @@ class ComponentsService(object):
         if not kwargs:
             raise Exception('attributes for Contact are missing')
 
-        attributes = dict((k, v) for k, v in kwargs.iteritems()
+        attributes = dict((k, v) for k, v in kwargs.items()
                           if k in self.OPTS_KEYS_TO_PERSIST)
 
         _, _, component = self.http_client.patch(
@@ -207,7 +203,8 @@ class ComponentsService(object):
                 page_id=self.page_id, component_id=component_id), container='component', body=attributes)
         return component
 
-class IncidentsService(object):
+
+class IncidentsService:
     """
     :class:`statuspageio.IncidentsService` is used by :class:`statuspageio.Client` to make
     actions related to Incidents resource.
@@ -230,7 +227,7 @@ class IncidentsService(object):
     def http_client(self):
         return self.__http_client
 
-    def list(self):      
+    def list(self):
         """
         List all incidents
 
@@ -289,7 +286,7 @@ class IncidentsService(object):
         if not kwargs:
             raise Exception('attributes are missing')
 
-        attributes = dict((k, v) for k, v in kwargs.iteritems()
+        attributes = dict((k, v) for k, v in kwargs.items()
                           if k in OPTS_KEYS_TO_PERSIST)
 
         _, _, component = self.http_client.post(
@@ -323,7 +320,7 @@ class IncidentsService(object):
         if not kwargs:
             raise Exception('attributes are missing')
 
-        attributes = dict((k, v) for k, v in kwargs.iteritems()
+        attributes = dict((k, v) for k, v in kwargs.items()
                           if k in OPTS_KEYS_TO_PERSIST)
 
         _, _, incident = self.http_client.post(
@@ -344,7 +341,7 @@ class IncidentsService(object):
         status_code, _, _ = self.http_client.delete(
             "/pages/{page_id}/incidents/{incident_id}.json".format(
                 page_id=self.page_id, incident_id=incident_id))
-        return status_code 
+        return status_code
 
     def update(self, incident_id, **kwargs):
         """
@@ -372,7 +369,7 @@ class IncidentsService(object):
         if not kwargs:
             raise Exception('attributes for Contact are missing')
 
-        attributes = dict((k, v) for k, v in kwargs.iteritems()
+        attributes = dict((k, v) for k, v in kwargs.items()
                           if k in OPTS_KEYS_TO_PERSIST)
 
         _, _, component = self.http_client.patch(
@@ -380,14 +377,15 @@ class IncidentsService(object):
                 page_id=self.page_id, incident_id=incident_id), container=self.container, body=attributes)
         return component
 
-class SubscribersService(object):
+
+class SubscribersService:
     """
     :class:`statuspageio.SubscribersService` is used by :class:`statuspageio.Client` to make
     actions related to Subscriber resource.
 
     Normally you won't instantiate this class directly.
     """
-    
+
     OPTS_KEYS_TO_PERSIST = ['name', 'description', 'group_id', 'status']
 
     def __init__(self, http_client, page_id):
@@ -438,7 +436,7 @@ class SubscribersService(object):
         if not kwargs:
             raise Exception('attributes are missing')
 
-        attributes = dict((k, v) for k, v in kwargs.iteritems()
+        attributes = dict((k, v) for k, v in kwargs.items()
                           if k in OPTS_KEYS_TO_PERSIST)
 
         _, _, subscriber = self.http_client.post(
@@ -462,7 +460,8 @@ class SubscribersService(object):
                 page_id=self.page_id, subscriber_id=subscriber_id))
         return status_code
 
-class MetricsService(object):
+
+class MetricsService:
     """
     :class:`statuspageio.MetricsService` is used by :class:`statuspageio.Client` to make
     actions related to Metrics resource.
@@ -542,7 +541,7 @@ class MetricsService(object):
         if not kwargs:
             raise Exception('attributes are missing')
 
-        attributes = dict((k, v) for k, v in kwargs.iteritems()
+        attributes = dict((k, v) for k, v in kwargs.items()
                           if k in OPTS_KEYS_TO_PERSIST)
 
         _, _, metric = self.http_client.post(
@@ -567,7 +566,7 @@ class MetricsService(object):
         if not kwargs:
             raise Exception('attributes are missing')
 
-        attributes = dict((k, v) for k, v in kwargs.iteritems()
+        attributes = dict((k, v) for k, v in kwargs.items()
                           if k in OPTS_KEYS_TO_PERSIST)
 
         _, _, metric = self.http_client.post(
@@ -579,7 +578,7 @@ class MetricsService(object):
     def delete_all_data(self, metric_id=None):
         """
         Delete All Metric Data
-        
+
         :calls: ``delete /pages/[page_id]/metrics/[metric_id]/data.json``
         :param metric_id: The id of the custom metric.
         :return: Dictionary that support attriubte-style access and represents updated Component resource.
@@ -594,7 +593,7 @@ class MetricsService(object):
     def delete(self, metric_id=None):
         """
         Delete Custom Metric
-        
+
         :calls: ``delete /pages/[page_id]/metrics/[metric_id].json``
         :param metric_id: The id of the custom metric.
         :return: status code.
@@ -606,7 +605,8 @@ class MetricsService(object):
                 page_id=self.page_id, metric_id=metric_id))
         return metric
 
-class UsersService(object):
+
+class UsersService:
     """
     :class:`statuspageio.UsersService` is used by :class:`statuspageio.Client` to make
     actions related to Users resource.
@@ -624,9 +624,6 @@ class UsersService(object):
 
     @property
     def http_client(self):
-
-        # TODO: Review. I did not want to have to set the orginization_id all
-        # the time as many people may not want to manage users.
         if not self.organization_id:
             raise ConfigurationError(
                 'No organization_id provided.'
@@ -649,8 +646,8 @@ class UsersService(object):
 
     def create(self, **kwargs):
         """
-        Create a user 
-        
+        Create a user
+
         :calls: ``post /organizations/[organization_id]/users.json``
         :param dict **kwargs:  Users attributes to create.
         :return: Dictionary that support attriubte-style access and represents updated User resource.
@@ -661,7 +658,7 @@ class UsersService(object):
         if not kwargs:
             raise Exception('attributes are missing')
 
-        attributes = dict((k, v) for k, v in kwargs.iteritems()
+        attributes = dict((k, v) for k, v in kwargs.items()
                           if k in OPTS_KEYS_TO_PERSIST)
 
         _, _, user = self.http_client.post(
@@ -673,7 +670,7 @@ class UsersService(object):
     def delete(self, user_id=None):
         """
         Delete a User
-        
+
         :calls: ``delete organizations/[organization_id]/users/[user_id].json``
         :param user_id: The id of the user to delete.
         :return: status code.

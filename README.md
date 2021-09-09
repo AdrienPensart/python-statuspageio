@@ -13,7 +13,7 @@ Statuspageio package can be installed either via pip:
 
 .. code:: bash
 
-    $ pip install --upgrade statuspageio
+    $ pip install --upgrade crunch-statuspageio
 
 
 
@@ -105,14 +105,14 @@ file.
 Tests
 -----
 
-Sorry. These need to be written. 
+Sorry. These need to be written.
 
 
 Thanks
 ------
 
-Thank you to the BaseCRM development team who created the majority of the code for this project. 
-We forked the code as the aritectural style worked really well for this project. 
+Thank you to the BaseCRM development team who created the majority of the code for this project.
+We forked the code as the aritectural style worked really well for this project.
 Please see https://github.com/basecrm/basecrm-python for more details
 
 Thank you so much!

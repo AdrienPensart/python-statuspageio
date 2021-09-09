@@ -10,7 +10,6 @@ Usage::
 :license: MIT, see LICENSE for more details.
 """
 
-from statuspageio.version import VERSION
 from statuspageio.errors import (
     ConfigurationError,
     RateLimitError,
@@ -19,7 +18,6 @@ from statuspageio.errors import (
     ResourceError,
     ServerError
 )
-#
 
 from statuspageio.configuration import Configuration
 from statuspageio.http_client import HttpClient
@@ -33,5 +31,22 @@ from statuspageio.services import (
     UsersService,
 )
 
-
 from statuspageio.client import Client
+
+__all__ = [
+    'ConfigurationError',
+    'RateLimitError',
+    'BaseError',
+    'RequestError',
+    'ResourceError',
+    'ServerError',
+    'Configuration',
+    'HttpClient',
+    'PageService',
+    'ComponentsService',
+    'IncidentsService',
+    'SubscribersService',
+    'MetricsService',
+    'UsersService',
+    'Client',
+]
