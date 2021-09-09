@@ -18,10 +18,7 @@ class HttpClient:
         """
         :param :class:`statuspageio.Configuration` config: StatusPage.io client configuration.
         """
-
         self.config = config
-        if self.config.verbose:
-            self.enable_logging()
 
     def get(self, url, params=None, **kwargs):
         """

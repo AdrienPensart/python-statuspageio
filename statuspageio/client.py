@@ -27,7 +27,6 @@ class Client:
         :param str access_token: Personal access token.
         :param str base_url: (optional) Base url for the api. Default: ``https://api.getbase.com``.
         :param str user_agent: (optional) Client user agent. Default: ``statuspageio/v1 Python/{basecrm.VERSION}``.
-        :param bool verbose: (optional) Verbose/debug mode. Default: ``False``.
         :param int timeout: (optional) Connection and response timeout. Default: **30** seconds.
         :param bool verify_ssl: (optional) Whether to verify ssl or not. Default: ``True``.
 
