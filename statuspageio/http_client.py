@@ -112,9 +112,7 @@ class HttpClient:
             * :param bool raw: (optional) Whether to wrap and uwrap the envelope. Default: ``False``.
         """
 
-        url = "{base_url}{version}{resource}".format(base_url=self.config.base_url,
-                                                     version=self.API_VERSION,
-                                                     resource=url)
+        url = f"{self.config.base_url}{self.API_VERSION}{url}"
 
         headers = {
             "Content-Type": "application/x-www-form-urlencoded",
@@ -157,9 +155,8 @@ class HttpClient:
             errors = resp.json()
         except Exception as e:
             raise Exception('Unknown HTTP error response. Json expected. '
-                            'HTTP response code={0}. '
-                            'HTTP response body={1}'.format(resp.status_code,
-                                                            resp.text)) from e
+                            f'HTTP response code={resp.status_code}. '
+                            f'HTTP response body={resp.text}') from e
 
         resp_code = resp.status_code
         if resp_code == 422:

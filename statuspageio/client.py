@@ -3,7 +3,7 @@ from statuspageio.http_client import HttpClient
 import statuspageio.services
 
 
-class Client:
+class Client:  # pylint: disable=too-many-instance-attributes
     """
     The :class:`Client <Client>` is the entry point to all services and actions.
 
@@ -42,6 +42,7 @@ class Client:
 
         self.__pages = statuspageio.services.PageService(self.http_client, self.config.page_id)
         self.__components = statuspageio.services.ComponentsService(self.http_client, self.config.page_id)
+        self.__component_groups = statuspageio.services.ComponentGroupsService(self.http_client, self.config.page_id)
         self.__incidents = statuspageio.services.IncidentsService(self.http_client, self.config.page_id)
         self.__subscribers = statuspageio.services.SubscribersService(self.http_client, self.config.page_id)
         self.__metrics = statuspageio.services.MetricsService(self.http_client, self.config.page_id)
@@ -54,6 +55,10 @@ class Client:
     @property
     def components(self):
         return self.__components
+
+    @property
+    def component_groups(self):
+        return self.__component_groups
 
     @property
     def incidents(self):

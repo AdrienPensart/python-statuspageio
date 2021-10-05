@@ -33,10 +33,10 @@ class PageService:
 
 
         :calls: ``get pages/{page_id}.json``
-        :return: Dictionary that support attriubte-style access and represents updated Component resource.
+        :return: Dictionary that support attribute-style access and represents updated Component resource.
         :rtype: dict
         """
-        _, _, page = self.http_client.get('/pages/{page_id}.json'.format(page_id=self.page_id))
+        _, _, page = self.http_client.get(f'/pages/{self.page_id}.json')
 
         return page
 
@@ -50,7 +50,7 @@ class PageService:
 
         :calls: ``patch pages/{page_id}.json``
         :param dict **kwargs:  component attributes to update.
-        :return: Dictionary that support attriubte-style access and represents updated Component resource.
+        :return: Dictionary that support attribute-style access and represents updated Component resource.
         :rtype: dict
         """
 
@@ -85,9 +85,11 @@ class PageService:
         attributes = dict((k, v) for k, v in kwargs.items()
                           if k in OPTS_KEYS_TO_PERSIST)
 
-        page = self.http_client.patch('/pages/{page_id}.json'.format(page_id=self.page_id),
-                                      container=self.container,
-                                      body=attributes)
+        page = self.http_client.patch(
+            f'/pages/{self.page_id}.json',
+            container=self.container,
+            body=attributes,
+        )
 
         return page
 
@@ -115,6 +117,21 @@ class ComponentsService:
     def http_client(self):
         return self.__http_client
 
+    def get(self, component_id):
+        """
+        Get component details
+
+        Gets component information
+        If the specified component does not exist, the request will return an error
+
+
+        :calls: ``get components/{component_id}.json``
+        :return: Dictionary that support attribute-style access and represents updated Component resource.
+        :rtype: dict
+        """
+        _, _, page = self.http_client.get(f'/pages/{self.page_id}/components/{component_id}')
+        return page
+
     def list(self):
         """
         List components
@@ -124,12 +141,11 @@ class ComponentsService:
 
 
         :calls: ``get pages/{page_id}/components/{component_id}.json``
-        :return: Dictionary that support attriubte-style access and represents updated Component resource.
+        :return: Dictionary that support attribute-style access and represents updated Component resource.
         :rtype: dict
         """
 
-        _, _, components = self.http_client.get(
-            '/pages/{page_id}/components.json'.format(page_id=self.page_id))
+        _, _, components = self.http_client.get(f'/pages/{self.page_id}/components.json')
         return components
 
     def create(self, **kwargs):
@@ -142,7 +158,7 @@ class ComponentsService:
 
         :calls: ``post pages/{page_id}/components.json``
         :param dict **kwargs:  component attributes to update.
-        :return: Dictionary that support attriubte-style access and represents updated Component resource.
+        :return: Dictionary that support attribute-style access and represents updated Component resource.
         :rtype: dict
         """
 
@@ -153,8 +169,10 @@ class ComponentsService:
                           if k in self.OPTS_KEYS_TO_PERSIST)
 
         _, _, component = self.http_client.post(
-            '/pages/{page_id}/components.json'.format(
-                page_id=self.page_id), container=self.container, body=attributes)
+            f'/pages/{self.page_id}/components.json',
+            container=self.container,
+            body=attributes,
+        )
 
         return component
 
@@ -168,13 +186,14 @@ class ComponentsService:
 
         :calls: ``delete pages/{page_id}/components/{component_id}.json``
         :param int component_id: Unique identifier of a component.
-        :return: Dictionary that support attriubte-style access and represents updated Component resource.
+        :return: Dictionary that support attribute-style access and represents updated Component resource.
         :rtype: dict
         """
 
         status_code, _, _ = self.http_client.delete(
-            "/pages/{page_id}/components/{component_id}.json".format(
-                page_id=self.page_id, component_id=component_id))
+            f"/pages/{self.page_id}/components/{component_id}.json",
+            component_id=component_id,
+        )
         return status_code
 
     def update(self, component_id, **kwargs):
@@ -188,7 +207,7 @@ class ComponentsService:
         :calls: ``patch pages/{page_id}/components/{component_id}.json``
         :param int component_id: Unique identifier of a component.
         :param dict **kwargs:  component attributes to update.
-        :return: Dictionary that support attriubte-style access and represents updated Component resource.
+        :return: Dictionary that support attribute-style access and represents updated Component resource.
         :rtype: dict
         """
 
@@ -199,9 +218,82 @@ class ComponentsService:
                           if k in self.OPTS_KEYS_TO_PERSIST)
 
         _, _, component = self.http_client.patch(
-            "/pages/{page_id}/components/{component_id}.json".format(
-                page_id=self.page_id, component_id=component_id), container='component', body=attributes)
+            f"/pages/{self.page_id}/components/{component_id}.json",
+            container=self.container,
+            body=attributes,
+        )
         return component
+
+
+class ComponentGroupsService:
+    """
+    :class:`statuspageio.ComponentGroupsService` is used by :class:`statuspageio.Client` to make
+    actions related to Component Groups resource.
+
+    Normally you won't instantiate this class directly.
+    """
+
+    OPTS_KEYS_TO_PERSIST = ['name', 'description', 'status']
+
+    def __init__(self, http_client, page_id):
+        """
+        :param :class:`statuspageio.HttpClient` http_client: Pre configured high-level http client.
+        """
+
+        self.__http_client = http_client
+        self.page_id = page_id
+        self.container = 'component_group'
+
+    @property
+    def http_client(self):
+        return self.__http_client
+
+    def list(self):
+        """
+        List all component groups
+
+        :calls: ``get pages/{page_id}/component-groups.json``
+        :return: Dictionary that support attribute-style access and represents updated Component Groups resource.
+        :rtype: dict
+        """
+
+        _, _, component_groups = self.http_client.get(f'/pages/{self.page_id}/component-groups.json')
+        return component_groups
+
+    def create(self, name, components, description=None):
+        """
+        Create a component group
+
+        :calls: ``post pages/{page_id}/component-groups.json``
+        :param dict **kwargs:  component group attributes to create.
+        :return: Dictionary that support attribute-style access and represents updated Component Group resource.
+        :rtype: dict
+        """
+        body = {
+            'description': description,
+            'component_group': {
+                'components': components,
+                'name': name,
+            }
+        }
+
+        _, _, component_group = self.http_client.post(
+            f'/pages/{self.page_id}/component-groups.json',
+            raw=True,
+            body=body,
+        )
+        return component_group
+
+    def delete(self, component_group_id):
+        """
+        Remove a incident
+
+        :calls: ``delete pages/{page_id}/component-groups.json``
+        :return: status code
+        :rtype: int
+        """
+        status_code, _, _ = self.http_client.delete(f"/pages/{self.page_id}/component-groups/{component_group_id}.json")
+        return status_code
 
 
 class IncidentsService:
@@ -232,12 +324,11 @@ class IncidentsService:
         List all incidents
 
         :calls: ``get pages/{page_id}/incidents.json``
-        :return: Dictionary that support attriubte-style access and represents updated Component resource.
+        :return: Dictionary that support attribute-style access and represents updated Component resource.
         :rtype: dict
         """
 
-        _, _, incidents = self.http_client.get(
-            '/pages/{page_id}/incidents.json'.format(page_id=self.page_id))
+        _, _, incidents = self.http_client.get(f'/pages/{self.page_id}/incidents.json')
         return incidents
 
     def list_unresolved(self):
@@ -245,12 +336,11 @@ class IncidentsService:
         List unresolved incidents
 
         :calls: ``get pages/{page_id}/incidents/unresolved.json``
-        :return: Dictionary that support attriubte-style access and represents updated Component resource.
+        :return: Dictionary that support attribute-style access and represents updated Component resource.
         :rtype: dict
         """
 
-        _, _, incidents = self.http_client.get(
-            '/pages/{page_id}/incidents/unresolved.json'.format(page_id=self.page_id))
+        _, _, incidents = self.http_client.get(f'/pages/{self.page_id}/incidents/unresolved.json')
         return incidents
 
     def list_scheduled(self):
@@ -258,11 +348,10 @@ class IncidentsService:
         List scheduled incidents
 
         :calls: ``get pages/{page_id}/incidents/scheduled.json``
-        :return: Dictionary that support attriubte-style access and represents updated Component resource.
+        :return: Dictionary that support attribute-style access and represents updated Component resource.
         :rtype: dict
         """
-        _, _, incidents = self.http_client.get(
-            '/pages/{page_id}/incidents/scheduled.json'.format(page_id=self.page_id))
+        _, _, incidents = self.http_client.get(f'/pages/{self.page_id}/incidents/scheduled.json')
         return incidents
 
     def create(self, **kwargs):
@@ -271,7 +360,7 @@ class IncidentsService:
 
         :calls: ``post pages/{page_id}/incidents.json``
         :param dict **kwargs:  incident attributes to update.
-        :return: Dictionary that support attriubte-style access and represents updated Component resource.
+        :return: Dictionary that support attribute-style access and represents updated Component resource.
         :rtype: dict
         """
 
@@ -290,8 +379,10 @@ class IncidentsService:
                           if k in OPTS_KEYS_TO_PERSIST)
 
         _, _, component = self.http_client.post(
-            '/pages/{page_id}/incidents.json'.format(
-                page_id=self.page_id), container=self.container, body=attributes)
+            f'/pages/{self.page_id}/incidents.json',
+            container=self.container,
+            body=attributes,
+        )
 
         return component
 
@@ -301,7 +392,7 @@ class IncidentsService:
 
         :calls: ``post pages/{page_id}/incidents.json``
         :param dict **kwargs:  incident attributes to update.
-        :return: Dictionary that support attriubte-style access and represents updated Component resource.
+        :return: Dictionary that support attribute-style access and represents updated Component resource.
         :rtype: dict
         """
 
@@ -324,9 +415,10 @@ class IncidentsService:
                           if k in OPTS_KEYS_TO_PERSIST)
 
         _, _, incident = self.http_client.post(
-            '/pages/{page_id}/incidents.json'.format(
-                page_id=self.page_id), container=self.container, body=attributes)
-
+            f'/pages/{self.page_id}/incidents.json',
+            container=self.container,
+            body=attributes,
+        )
         return incident
 
     def delete(self, incident_id):
@@ -338,9 +430,7 @@ class IncidentsService:
         :rtype: int
         """
 
-        status_code, _, _ = self.http_client.delete(
-            "/pages/{page_id}/incidents/{incident_id}.json".format(
-                page_id=self.page_id, incident_id=incident_id))
+        status_code, _, _ = self.http_client.delete(f"/pages/{self.page_id}/incidents/{incident_id}.json")
         return status_code
 
     def update(self, incident_id, **kwargs):
@@ -373,8 +463,10 @@ class IncidentsService:
                           if k in OPTS_KEYS_TO_PERSIST)
 
         _, _, component = self.http_client.patch(
-            "/pages/{page_id}/incidents/{incident_id}.json".format(
-                page_id=self.page_id, incident_id=incident_id), container=self.container, body=attributes)
+            f"/pages/{self.page_id}/incidents/{incident_id}.json",
+            container=self.container,
+            body=attributes,
+        )
         return component
 
 
@@ -407,12 +499,11 @@ class SubscribersService:
 
         Lists all of the current subscribers
         :calls: ``get /pages/[page_id]/subscribers.json``
-        :return: Dictionary that support attriubte-style access and represents updated Component resource.
+        :return: Dictionary that support attribute-style access and represents updated Component resource.
         :rtype: dict
         """
 
-        _, _, subscribers = self.http_client.get(
-            '/pages/{page_id}/subscribers.json'.format(page_id=self.page_id))
+        _, _, subscribers = self.http_client.get(f'/pages/{self.page_id}/subscribers.json')
         return subscribers
 
     def create(self, **kwargs):
@@ -421,7 +512,7 @@ class SubscribersService:
 
         :calls: ``post pages/{page_id}/subscribers.json``
         :param dict **kwargs:  subscriber attributes to update.
-        :return: Dictionary that support attriubte-style access and represents updated Component resource.
+        :return: Dictionary that support attribute-style access and represents updated Component resource.
         :rtype: dict
         """
 
@@ -440,8 +531,10 @@ class SubscribersService:
                           if k in OPTS_KEYS_TO_PERSIST)
 
         _, _, subscriber = self.http_client.post(
-            '/pages/{page_id}/subscribers.json'.format(
-                page_id=self.page_id), container=self.container, body=attributes)
+            f'/pages/{self.page_id}/subscribers.json',
+            container=self.container,
+            body=attributes,
+        )
 
         return subscriber
 
@@ -455,9 +548,7 @@ class SubscribersService:
         :rtype: int
         """
 
-        status_code, _, _ = self.http_client.delete(
-            "/pages/{page_id}/subscribers/{subscriber_id}.json".format(
-                page_id=self.page_id, subscriber_id=subscriber_id))
+        status_code, _, _ = self.http_client.delete(f"/pages/{self.page_id}/subscribers/{subscriber_id}.json")
         return status_code
 
 
@@ -486,7 +577,7 @@ class MetricsService:
         """
         List available metric providers
         :calls: ``get /metrics_providers.json``
-        :return: Dictionary that support attriubte-style access and represents updated Component resource.
+        :return: Dictionary that support attribute-style access and represents updated Component resource.
         :rtype: dict
         """
 
@@ -497,12 +588,11 @@ class MetricsService:
         """
         List linked metric providers
         :calls: ``get /pages/[page_id]/metrics_providers.json``
-        :return: Dictionary that support attriubte-style access and represents updated Component resource.
+        :return: Dictionary that support attribute-style access and represents updated Component resource.
         :rtype: dict
         """
 
-        _, _, providers = self.http_client.get(
-            '/pages/{page_id}/metrics_providers.json'.format(page_id=self.page_id))
+        _, _, providers = self.http_client.get(f'/pages/{self.page_id}/metrics_providers.json')
         return providers
 
     def list_metrics_for_provider(self, provider_id=None):
@@ -510,12 +600,10 @@ class MetricsService:
         List metrics for a linked metric provider
         :params provider_id This is the ID from the provider you are looking up
         :calls: ``/pages/{page_id}/metrics_providers/{metrics_provider_id}/metrics.json``
-        :return: Dictionary that support attriubte-style access and represents updated Component resource.
+        :return: Dictionary that support attribute-style access and represents updated Component resource.
         :rtype: dict
         """
-        _, _, metrics = self.http_client.get(
-            '/pages/{page_id}/metrics_providers/{metrics_provider_id}/metrics.json'.format(
-                page_id=self.page_id, metrics_provider_id=provider_id))
+        _, _, metrics = self.http_client.get(f'/pages/{self.page_id}/metrics_providers/{provider_id}/metrics.json')
         return metrics
 
     def create(self, provider_id=None, **kwargs):
@@ -525,7 +613,7 @@ class MetricsService:
         :calls: ``post /pages/[page_id]/metrics_providers/[metrics_provider_id]/metrics.json``
         :param provider_id: The id of the custom provider or 'self' from the available providers list
         :param dict **kwargs:  metic attributes to create.
-        :return: Dictionary that support attriubte-style access and represents updated Component resource.
+        :return: Dictionary that support attribute-style access and represents updated Component resource.
         :rtype: dict
         """
 
@@ -545,8 +633,10 @@ class MetricsService:
                           if k in OPTS_KEYS_TO_PERSIST)
 
         _, _, metric = self.http_client.post(
-            '/pages/{page_id}/metrics_providers/{metrics_provider_id}/metrics.json'.format(
-                page_id=self.page_id, metrics_provider_id=provider_id), container=self.container, body=attributes)
+            f'/pages/{self.page_id}/metrics_providers/{provider_id}/metrics.json',
+            container=self.container,
+            body=attributes,
+        )
 
         return metric
 
@@ -557,7 +647,7 @@ class MetricsService:
         :calls: ``post /pages/{page_id}/metrics/{metric_id}/data.json``
         :param metric_id: The id of the custom metric.
         :param dict **kwargs:  metic attributes to create.
-        :return: Dictionary that support attriubte-style access and represents updated Component resource.
+        :return: Dictionary that support attribute-style access and represents updated Component resource.
         :rtype: dict
         """
 
@@ -570,8 +660,10 @@ class MetricsService:
                           if k in OPTS_KEYS_TO_PERSIST)
 
         _, _, metric = self.http_client.post(
-            '/pages/{page_id}/metrics/{metric_id}/data.json'.format(
-                page_id=self.page_id, metric_id=metric_id), container='data', body=attributes)
+            f'/pages/{self.page_id}/metrics/{metric_id}/data.json',
+            container='data',
+            body=attributes,
+        )
 
         return metric
 
@@ -581,13 +673,11 @@ class MetricsService:
 
         :calls: ``delete /pages/[page_id]/metrics/[metric_id]/data.json``
         :param metric_id: The id of the custom metric.
-        :return: Dictionary that support attriubte-style access and represents updated Component resource.
+        :return: Dictionary that support attribute-style access and represents updated Component resource.
         :rtype: dict
         """
 
-        metric, _, _, = self.http_client.delete(
-            "/pages/{page_id}/metrics/{metric_id}/data.json".format(
-                page_id=self.page_id, metric_id=metric_id))
+        metric, _, _, = self.http_client.delete(f"/pages/{self.page_id}/metrics/{metric_id}/data.json")
         return metric
 
     def delete(self, metric_id=None):
@@ -600,9 +690,7 @@ class MetricsService:
         :rtype: int
         """
 
-        _, _, metric = self.http_client.delete(
-            "/pages/{page_id}/metrics/{metric_id}.json".format(
-                page_id=self.page_id, metric_id=metric_id))
+        _, _, metric = self.http_client.delete(f"/pages/{self.page_id}/metrics/{metric_id}.json")
         return metric
 
 
@@ -636,12 +724,13 @@ class UsersService:
         """
         List all users
         :calls: ``get organizations/[organization_id]/users.json``
-        :return: Dictionary that support attriubte-style access and represents User resource.
+        :return: Dictionary that support attribute-style access and represents User resource.
         :rtype: dict
         """
         _, _, users = self.http_client.get(
-            '/organizations/{organization_id}/users.json'.format(
-                organization_id=self.organization_id), container=self.container)
+            f'/organizations/{self.organization_id}/users.json',
+            container=self.container,
+        )
         return users
 
     def create(self, **kwargs):
@@ -650,7 +739,7 @@ class UsersService:
 
         :calls: ``post /organizations/[organization_id]/users.json``
         :param dict **kwargs:  Users attributes to create.
-        :return: Dictionary that support attriubte-style access and represents updated User resource.
+        :return: Dictionary that support attribute-style access and represents updated User resource.
         :rtype: dict
         """
         OPTS_KEYS_TO_PERSIST = ['email', 'password', 'first_name', 'last_name']
@@ -662,8 +751,10 @@ class UsersService:
                           if k in OPTS_KEYS_TO_PERSIST)
 
         _, _, user = self.http_client.post(
-            '/organizations/{organization_id}/users.json'.format(
-                organization_id=self.organization_id), container=self.container, body=attributes)
+            f'/organizations/{self.organization_id}/users.json',
+            container=self.container,
+            body=attributes,
+        )
 
         return user
 
@@ -676,8 +767,5 @@ class UsersService:
         :return: status code.
         :rtype: int
         """
-
-        _, _, user = self.http_client.delete(
-            "/organizations/{organization_id}/users/{user_id}.json".format(
-                organization_id=self.organization_id, user_id=user_id))
+        _, _, user = self.http_client.delete(f"/organizations/{self.organization_id}/users/{user_id}.json")
         return user
