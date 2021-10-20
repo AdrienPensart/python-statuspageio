@@ -367,7 +367,7 @@ class IncidentsService:
         OPTS_KEYS_TO_PERSIST = [
             'name',
             'status',
-            'message',
+            'body',
             'wants_twitter_update',
             'impact_override',
             'component_ids']
