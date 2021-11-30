@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "crunch-statuspageio"
-version = "0.2.1"
+version = "0.3"
 description = "Python client library for statuspage.io"
 authors = ["Adrien Pensart <adrien.pensart@corp.ovh.com>"]
 license = "MIT"
@@ -9,12 +9,12 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.6"
+python = ">=3.6.2,<4.0"
 requests = "^2.26.0"
 munch = "^2.5.0"
 
 [tool.poetry.dev-dependencies]
-pylint = "^2.10.2"
+pylint = "^2.12.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

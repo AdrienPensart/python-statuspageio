@@ -370,7 +370,8 @@ class IncidentsService:
             'body',
             'wants_twitter_update',
             'impact_override',
-            'component_ids']
+            'component_ids',
+        ]
 
         if not kwargs:
             raise Exception('attributes are missing')
@@ -407,7 +408,8 @@ class IncidentsService:
             'scheduled_auto_in_progress',
             'scheduled_auto_completed',
             'impact_override',
-            'component_ids']
+            'component_ids',
+        ]
         if not kwargs:
             raise Exception('attributes are missing')
 
@@ -451,13 +453,14 @@ class IncidentsService:
         OPTS_KEYS_TO_PERSIST = [
             'name',
             'status',
-            'message',
+            'body',
             'wants_twitter_update',
             'impact_override',
-            'component_ids']
+            'component_ids',
+        ]
 
         if not kwargs:
-            raise Exception('attributes for Contact are missing')
+            raise Exception('attributes for Incident are missing')
 
         attributes = dict((k, v) for k, v in kwargs.items()
                           if k in OPTS_KEYS_TO_PERSIST)
@@ -465,6 +468,35 @@ class IncidentsService:
         _, _, component = self.http_client.patch(
             f"/pages/{self.page_id}/incidents/{incident_id}.json",
             container=self.container,
+            body=attributes,
+        )
+        return component
+
+    def update_previous(self, incident_id, incident_update_id, **kwargs):
+        """
+        Update a previous incident update
+
+        :param dict **kwargs:  incident attributes to update.
+        :calls: ``patch /pages/[page_id]/incidents/[incident_id]/incident_updates/[incident_update_id]``
+        :return: Status code
+        :rtype: string
+
+        """
+        OPTS_KEYS_TO_PERSIST = [
+            'body',
+            'wants_twitter_update',
+            'deliver_notifications',
+        ]
+
+        if not kwargs:
+            raise Exception('attributes for Incident Update are missing')
+
+        attributes = dict((k, v) for k, v in kwargs.items()
+                          if k in OPTS_KEYS_TO_PERSIST)
+
+        _, _, component = self.http_client.patch(
+            f"/pages/{self.page_id}/incidents/{incident_id}/incident_updates/{incident_update_id}",
+            container='incident_update',
             body=attributes,
         )
         return component
