@@ -1,6 +1,6 @@
+import statuspageio.services
 from statuspageio.configuration import Configuration
 from statuspageio.http_client import HttpClient
-import statuspageio.services
 
 
 class Client:  # pylint: disable=too-many-instance-attributes

@@ -379,13 +379,13 @@ class IncidentsService:
         attributes = dict((k, v) for k, v in kwargs.items()
                           if k in OPTS_KEYS_TO_PERSIST)
 
-        _, _, component = self.http_client.post(
+        _, _, incident = self.http_client.post(
             f'/pages/{self.page_id}/incidents.json',
             container=self.container,
             body=attributes,
         )
 
-        return component
+        return incident
 
     def create_scheduled(self, **kwargs):
         """

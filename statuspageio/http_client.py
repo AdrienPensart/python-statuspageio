@@ -1,9 +1,16 @@
-import logging
 import http.client as http_client
 import json
+import logging
+
 import requests
-from munch import munchify
-from statuspageio.errors import RateLimitError, RequestError, ResourceError, ServerError
+from dotmap import DotMap  # type: ignore
+
+from statuspageio.errors import (
+    RateLimitError,
+    RequestError,
+    ResourceError,
+    ServerError
+)
 
 
 class HttpClient:
@@ -143,7 +150,7 @@ class HttpClient:
             self.handle_error_response(resp)
 
         if 'Content-Type' in resp.headers and 'json' in resp.headers['Content-Type']:
-            resp_body = munchify(resp.json()) if raw else self.unwrap_envelope(resp.json())
+            resp_body = DotMap(resp.json()) if raw else self.unwrap_envelope(resp.json())
         else:
             resp_body = resp.content
 
@@ -176,7 +183,7 @@ class HttpClient:
 
     @staticmethod
     def unwrap_envelope(body):
-        return [munchify(item) for item in body['items']] if 'items' in body else munchify(body)
+        return [DotMap(item) for item in body['items']] if 'items' in body else DotMap(body)
 
     @staticmethod
     def enable_logging():
