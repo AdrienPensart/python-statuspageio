@@ -371,6 +371,7 @@ class IncidentsService:
             'wants_twitter_update',
             'impact_override',
             'component_ids',
+            'metadata',
         ]
 
         if not kwargs:
@@ -409,6 +410,7 @@ class IncidentsService:
             'scheduled_auto_completed',
             'impact_override',
             'component_ids',
+            'metadata',
         ]
         if not kwargs:
             raise Exception('attributes are missing')
@@ -457,6 +459,7 @@ class IncidentsService:
             'wants_twitter_update',
             'impact_override',
             'component_ids',
+            'metadata',
         ]
 
         if not kwargs:
