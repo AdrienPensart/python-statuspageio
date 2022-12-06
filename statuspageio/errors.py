@@ -22,7 +22,7 @@ class BaseError(Exception):
 
     :attribute int http_status: Http status code.
     :attribute str logref: Request unique identifier.
-    :attribute list errors: List of :class:`DotMap <dotmap.DotMap>` objects representing returned errors.
+    :attribute list errors: List of :class:`Munch <munch.Munch>` objects representing returned errors.
 
     Each error object has following attributes:
     :attribute str code: The error code.
