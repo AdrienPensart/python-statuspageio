@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "crunch-statuspageio"
-version = "0.4"
+version = "0.5"
 description = "Python client library for statuspage.io"
 authors = ["Adrien Pensart <adrien.pensart@corp.ovh.com>"]
 license = "MIT"
