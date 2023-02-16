@@ -403,7 +403,7 @@ class IncidentsService:
             'status',
             'scheduled_for',
             'scheduled_until',
-            'message',
+            'body',
             'wants_twitter_update',
             'scheduled_remind_prior',
             'scheduled_auto_in_progress',
