@@ -80,7 +80,7 @@ class PageService:
             'css_yellows']
 
         if not kwargs:
-            raise Exception('attributes are missing')
+            raise ValueError('attributes are missing')
 
         attributes = dict((k, v) for k, v in kwargs.items()
                           if k in OPTS_KEYS_TO_PERSIST)
@@ -163,7 +163,7 @@ class ComponentsService:
         """
 
         if not kwargs:
-            raise Exception('attributes are missing')
+            raise ValueError('attributes are missing')
 
         attributes = dict((k, v) for k, v in kwargs.items()
                           if k in self.OPTS_KEYS_TO_PERSIST)
@@ -212,7 +212,7 @@ class ComponentsService:
         """
 
         if not kwargs:
-            raise Exception('attributes for Contact are missing')
+            raise ValueError('attributes for Contact are missing')
 
         attributes = dict((k, v) for k, v in kwargs.items()
                           if k in self.OPTS_KEYS_TO_PERSIST)
@@ -319,7 +319,7 @@ class IncidentsService:
     def http_client(self):
         return self.__http_client
 
-    def list(self):
+    def list(self, q=None, limit=100, page=1):
         """
         List all incidents
 
@@ -328,10 +328,15 @@ class IncidentsService:
         :rtype: dict
         """
 
-        _, _, incidents = self.http_client.get(f'/pages/{self.page_id}/incidents.json')
+        params = {
+            "limit": limit,
+            "q": q,
+            "page": page,
+        }
+        _, _, incidents = self.http_client.get(f'/pages/{self.page_id}/incidents.json', params=params)
         return incidents
 
-    def list_unresolved(self):
+    def list_unresolved(self, page=1, per_page=100):
         """
         List unresolved incidents
 
@@ -340,10 +345,14 @@ class IncidentsService:
         :rtype: dict
         """
 
-        _, _, incidents = self.http_client.get(f'/pages/{self.page_id}/incidents/unresolved.json')
+        params = {
+            "page": page,
+            "per_page": per_page,
+        }
+        _, _, incidents = self.http_client.get(f'/pages/{self.page_id}/incidents/unresolved.json', params=params)
         return incidents
 
-    def list_scheduled(self):
+    def list_scheduled(self, page=1, per_page=100):
         """
         List scheduled incidents
 
@@ -351,7 +360,41 @@ class IncidentsService:
         :return: Dictionary that support attribute-style access and represents updated Component resource.
         :rtype: dict
         """
-        _, _, incidents = self.http_client.get(f'/pages/{self.page_id}/incidents/scheduled.json')
+        params = {
+            "page": page,
+            "per_page": per_page,
+        }
+        _, _, incidents = self.http_client.get(f'/pages/{self.page_id}/incidents/scheduled.json', params=params)
+        return incidents
+
+    def list_upcoming(self, page=1, per_page=100):
+        """
+        List upcoming incidents
+
+        :calls: ``get pages/{page_id}/incidents/upcoming.json``
+        :return: Dictionary that support attribute-style access and represents updated Component resource.
+        :rtype: dict
+        """
+        params = {
+            "page": page,
+            "per_page": per_page,
+        }
+        _, _, incidents = self.http_client.get(f'/pages/{self.page_id}/incidents/upcoming.json', params=params)
+        return incidents
+
+    def list_active_maintenance(self, page=1, per_page=100):
+        """
+        List active maintenances
+
+        :calls: ``get pages/{page_id}/incidents/active_maintenance.json``
+        :return: Dictionary that support attribute-style access and represents updated Component resource.
+        :rtype: dict
+        """
+        params = {
+            "page": page,
+            "per_page": per_page,
+        }
+        _, _, incidents = self.http_client.get(f'/pages/{self.page_id}/incidents/active_maintenance.json', params=params)
         return incidents
 
     def create(self, **kwargs):
@@ -375,7 +418,7 @@ class IncidentsService:
         ]
 
         if not kwargs:
-            raise Exception('attributes are missing')
+            raise ValueError('attributes are missing')
 
         attributes = dict((k, v) for k, v in kwargs.items()
                           if k in OPTS_KEYS_TO_PERSIST)
@@ -413,7 +456,7 @@ class IncidentsService:
             'metadata',
         ]
         if not kwargs:
-            raise Exception('attributes are missing')
+            raise ValueError('attributes are missing')
 
         attributes = dict((k, v) for k, v in kwargs.items()
                           if k in OPTS_KEYS_TO_PERSIST)
@@ -463,7 +506,7 @@ class IncidentsService:
         ]
 
         if not kwargs:
-            raise Exception('attributes for Incident are missing')
+            raise ValueError('attributes for Incident are missing')
 
         attributes = dict((k, v) for k, v in kwargs.items()
                           if k in OPTS_KEYS_TO_PERSIST)
@@ -492,7 +535,7 @@ class IncidentsService:
         ]
 
         if not kwargs:
-            raise Exception('attributes for Incident Update are missing')
+            raise ValueError('attributes for Incident Update are missing')
 
         attributes = dict((k, v) for k, v in kwargs.items()
                           if k in OPTS_KEYS_TO_PERSIST)
@@ -560,7 +603,7 @@ class SubscribersService:
             'page_access_user']
 
         if not kwargs:
-            raise Exception('attributes are missing')
+            raise ValueError('attributes are missing')
 
         attributes = dict((k, v) for k, v in kwargs.items()
                           if k in OPTS_KEYS_TO_PERSIST)
@@ -662,7 +705,7 @@ class MetricsService:
             'decimal_places']
 
         if not kwargs:
-            raise Exception('attributes are missing')
+            raise ValueError('attributes are missing')
 
         attributes = dict((k, v) for k, v in kwargs.items()
                           if k in OPTS_KEYS_TO_PERSIST)
@@ -689,7 +732,7 @@ class MetricsService:
         OPTS_KEYS_TO_PERSIST = ['timestamp', 'value']
 
         if not kwargs:
-            raise Exception('attributes are missing')
+            raise ValueError('attributes are missing')
 
         attributes = dict((k, v) for k, v in kwargs.items()
                           if k in OPTS_KEYS_TO_PERSIST)
@@ -780,7 +823,7 @@ class UsersService:
         OPTS_KEYS_TO_PERSIST = ['email', 'password', 'first_name', 'last_name']
 
         if not kwargs:
-            raise Exception('attributes are missing')
+            raise ValueError('attributes are missing')
 
         attributes = dict((k, v) for k, v in kwargs.items()
                           if k in OPTS_KEYS_TO_PERSIST)
